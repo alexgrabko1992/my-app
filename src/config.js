@@ -1,7 +1,7 @@
 class config {
-  myName = "Alex";
-  clientId = "WKJCFhTUJz9mv61Mz0WcmGjAhykB7Rfw";
+  clientId = "SGnXdPGoKOBN9coXeShPwiIHLvNAg4k4";
   domain = "beautifulapp.eu.auth0.com";
+  audience = "http://express-api-server";
 }
 
 export default new config();
