@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import PrivateActions from "../service";
+import { BsFillTrashFill } from "react-icons/bs";
+import { CgUnblock } from "react-icons/cg";
+import { Button } from "react-bootstrap";
 
 import { Table } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -7,15 +10,47 @@ import { useAuth0 } from "@auth0/auth0-react";
 export const Users = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [users, setUsers] = useState([]);
-  console.log(users);
+  const [reload, setReload] = useState(false);
+
+  const handleClick = ({ target }) => {
+    const getResponseDelete = async (user) => {
+      const response = await PrivateActions.deleteUsers(
+        getAccessTokenSilently,
+        user.user_id
+      );
+      alert(response, setReload(!reload));
+    };
+    if (target.value == "delete") {
+      users.map((user) => (user.isSelected ? getResponseDelete(user) : user));
+    } else if (target.value == "block") {
+      users.map((user) =>
+        user.isSelected ? console.log(user.username) : user
+      );
+    }
+  };
+
   useEffect(() => {
     PrivateActions.getUsers(getAccessTokenSilently, setUsers);
-  }, []);
+  }, [reload]);
 
   return (
     <>
       <>
         <h3>Users</h3>
+        <Button
+          variant="outline-secondary"
+          value={"block"}
+          onClick={handleClick}
+        >
+          Block
+        </Button>
+        <Button variant="outline-warning">Unblock</Button>
+        <Button variant="outline-danger" value={"delete"} onClick={handleClick}>
+          Delete
+        </Button>
+        {/* <CgUnblock /> */}
+        {/* <BsFillTrashFill /> */}
+
         <Table striped bordered hover>
           <thead>
             <tr>

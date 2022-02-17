@@ -48,7 +48,7 @@ const getManagementApiJwt = () => {
 
 // ========================== get users info ==================
 
-app.use("/users", async (req, res) => {
+app.get("/users", async (req, res) => {
   const managementApiJwt = await getManagementApiJwt();
   const token = managementApiJwt.access_token;
 
@@ -63,6 +63,56 @@ app.use("/users", async (req, res) => {
     .request(options)
     .then(function (response) {
       res.send(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+});
+
+// ============================= delete users ===============================
+
+app.post("/delete-users", async (req, res) => {
+  const managementApiJwt = await getManagementApiJwt();
+  const token = managementApiJwt.access_token;
+  const userId = JSON.parse(req.headers.body);
+
+  const options = {
+    method: "DELETE",
+    url: `https://beautifulapp.eu.auth0.com/api/v2/users/${userId}`,
+    params: { search_engine: "v3" },
+    headers: { authorization: `Bearer ${token}` },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      response.data = "Users was deleted";
+      res.json(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+});
+
+// =======================  block users =====================
+
+app.post("/block-users", async (req, res) => {
+  const managementApiJwt = await getManagementApiJwt();
+  const token = managementApiJwt.access_token;
+  const userId = JSON.parse(req.headers.body);
+
+  const options = {
+    method: "GET",
+    url: `https://beautifulapp.eu.auth0.com/api/v2/user-blocks/${userId}`,
+    params: { q: userId, search_engine: "v3" },
+    headers: { authorization: `Bearer ${token}` },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      response.data = "Users was blocked";
+      res.json(response.data);
     })
     .catch(function (error) {
       console.error(error);
