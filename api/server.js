@@ -17,16 +17,12 @@ const jwtCheck = jwt({
     jwksRequestsPerMinute: 5,
     jwksUri: "https://beautifulapp.eu.auth0.com/.well-known/jwks.json",
   }),
-  audience: "http://express-api-server",
-  issuer: "https://beautifulapp.eu.auth0.com/",
+  audience: process.env.AUDIENCE,
+  issuer: `https://beautifulapp.eu.auth0.com/`,
   algorithms: ["RS256"],
 });
 
 app.use(jwtCheck);
-
-app.get("/secure", jwtCheck, (req, res) => {
-  res.json("Secure Resource");
-});
 
 const getManagementApiJwt = () => {
   return new Promise(function (resolve, reject) {
@@ -100,18 +96,53 @@ app.post("/block-users", async (req, res) => {
   const managementApiJwt = await getManagementApiJwt();
   const token = managementApiJwt.access_token;
   const userId = JSON.parse(req.headers.body);
+  // console.log(userId);
+  const block = { blocked: true };
 
   const options = {
-    method: "GET",
-    url: `https://beautifulapp.eu.auth0.com/api/v2/user-blocks/${userId}`,
-    params: { q: userId, search_engine: "v3" },
-    headers: { authorization: `Bearer ${token}` },
+    method: "PATCH",
+    url: `https://beautifulapp.eu.auth0.com/api/v2/users/${userId}`,
+    headers: {
+      authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify(block),
   };
 
   axios
     .request(options)
     .then(function (response) {
       response.data = "Users was blocked";
+      res.json(response.data);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+});
+
+// ============================== unblock users ====================
+
+app.post("/unblock-users", async (req, res) => {
+  const managementApiJwt = await getManagementApiJwt();
+  const token = managementApiJwt.access_token;
+  const userId = JSON.parse(req.headers.body);
+  // console.log(userId);
+  const block = { blocked: false };
+
+  const options = {
+    method: "PATCH",
+    url: `https://beautifulapp.eu.auth0.com/api/v2/users/${userId}`,
+    headers: {
+      authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify(block),
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      response.data = "Users was unblocked";
       res.json(response.data);
     })
     .catch(function (error) {

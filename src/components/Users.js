@@ -20,12 +20,26 @@ export const Users = () => {
       );
       alert(response, setReload(!reload));
     };
+    const getResponseBlock = async (user) => {
+      const response = await PrivateActions.blockUsers(
+        getAccessTokenSilently,
+        user.user_id
+      );
+      alert(response, setReload(!reload));
+    };
+    const getResponseUnblock = async (user) => {
+      const response = await PrivateActions.unblockUsers(
+        getAccessTokenSilently,
+        user.user_id
+      );
+      alert(response, setReload(!reload));
+    };
     if (target.value == "delete") {
       users.map((user) => (user.isSelected ? getResponseDelete(user) : user));
     } else if (target.value == "block") {
-      users.map((user) =>
-        user.isSelected ? console.log(user.username) : user
-      );
+      users.map((user) => (user.isSelected ? getResponseBlock(user) : user));
+    } else if (target.value == "unblock") {
+      users.map((user) => (user.isSelected ? getResponseUnblock(user) : user));
     }
   };
 
@@ -44,7 +58,13 @@ export const Users = () => {
         >
           Block
         </Button>
-        <Button variant="outline-warning">Unblock</Button>
+        <Button
+          variant="outline-warning"
+          value={"unblock"}
+          onClick={handleClick}
+        >
+          Unblock
+        </Button>
         <Button variant="outline-danger" value={"delete"} onClick={handleClick}>
           Delete
         </Button>
@@ -103,7 +123,7 @@ export const Users = () => {
                 <td>{e.email}</td>
                 <td>{PrivateActions.transformDate(e.created_at)}</td>
                 <td>{PrivateActions.transformDate(e.last_login)}</td>
-                <td>login</td>
+                <td>{e.blocked ? "Blocked" : "Unblocked"}</td>
               </tr>
             ))}
           </tbody>
