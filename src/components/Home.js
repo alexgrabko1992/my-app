@@ -4,13 +4,7 @@ import { Button } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 
 export const Home = () => {
-  const {
-    user,
-    isAuthenticated,
-    loginWithRedirect,
-    getAccessTokenSilently,
-    logout,
-  } = useAuth0();
+  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
   return (
     <div>
