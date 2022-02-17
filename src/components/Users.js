@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PrivateActions from "../service";
-import { BsFillTrashFill } from "react-icons/bs";
-import { CgUnblock } from "react-icons/cg";
+import { MdDeleteForever } from "react-icons/md";
 import { Button } from "react-bootstrap";
 
 import { Table } from "react-bootstrap";
@@ -34,18 +33,18 @@ export const Users = () => {
       );
       alert(response, setReload(!reload));
     };
-    if (target.value == "delete") {
-      users.map((user) => (user.isSelected ? getResponseDelete(user) : user));
-    } else if (target.value == "block") {
-      users.map((user) => (user.isSelected ? getResponseBlock(user) : user));
-    } else if (target.value == "unblock") {
+    if (target.value === "unblock") {
       users.map((user) => (user.isSelected ? getResponseUnblock(user) : user));
+    } else if (target.value === "block") {
+      users.map((user) => (user.isSelected ? getResponseBlock(user) : user));
+    } else {
+      users.map((user) => (user.isSelected ? getResponseDelete(user) : user));
     }
   };
 
   useEffect(() => {
     PrivateActions.getUsers(getAccessTokenSilently, setUsers);
-  }, [reload]);
+  }, [reload, getAccessTokenSilently]);
 
   return (
     <>
@@ -59,19 +58,26 @@ export const Users = () => {
           Block
         </Button>
         <Button
+          style={{ marginLeft: "2%" }}
           variant="outline-warning"
           value={"unblock"}
           onClick={handleClick}
         >
           Unblock
         </Button>
-        <Button variant="outline-danger" value={"delete"} onClick={handleClick}>
+        {/* <Button
+          style={{ marginLeft: "2%" }}
+          variant="outline-danger"
+          value={"delete"}
+          onClick={handleClick}
+        >
           Delete
-        </Button>
-        {/* <CgUnblock /> */}
-        {/* <BsFillTrashFill /> */}
-
-        <Table striped bordered hover>
+        </Button> */}
+        <MdDeleteForever
+          style={{ marginLeft: "2%", transform: "scale(2)", cursor: "pointer" }}
+          onClick={handleClick}
+        ></MdDeleteForever>
+        <Table striped bordered hover style={{ marginTop: "2%" }}>
           <thead>
             <tr>
               <th>
