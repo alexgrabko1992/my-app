@@ -17,7 +17,10 @@ export const Home = () => {
       <h1>Welcome to my home page!</h1>
       {isAuthenticated ? (
         <>
-          <h3 style={{ margin: "3%" }}>Hello {user.nickname}</h3>
+          <h3 style={{ margin: "3%" }}>
+            Hello{" "}
+            <span style={{ textTransform: "capitalize" }}>{user.nickname}</span>
+          </h3>
           <Button
             variant="danger"
             type="submit"

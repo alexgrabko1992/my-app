@@ -6,7 +6,8 @@ class PrivateActions {
         authorization: `Bearer ${token}`,
       },
     });
-    const jsonResponse = await response.json();
+    let jsonResponse = await response.json();
+    jsonResponse.map((item) => (item.isSelected = false));
     setHook(jsonResponse);
   };
   transformDate = (date) => {
